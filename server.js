@@ -2,17 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const knex = require('knex');
+const { Client } = require('pg')
 
-
-const db = knex({
-    client: 'pg',
-    connection: {
-      host : '127.0.0.1',
-      user : 'postgres',
-      password : 'aA123adata',
-      database : 'memory_game'
-    }
+//connecting to the database in heroku
+const db = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
   });
+
+db.connect();
 
 const app = express();
 
