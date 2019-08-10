@@ -24,6 +24,8 @@ app.get('/', (req,res) => {
 })
 
 app.get('/topScore', (req,res) => {
+
+    //gets the top score from the database so tht we can display it on the frontend
     db.select('score').from('top_score')
         .then(data => {
             return res.json(data[0])
@@ -32,10 +34,9 @@ app.get('/topScore', (req,res) => {
 })
 
 app.put('/updateTopScore', (req,res) => {
-    //have the front end send the score
-    // update it in the database
-    //send back confirmation its successful
     const { score } = req.body;
+
+    //gets the top score form the database, if the current score is lower it will update the database
     db.select('score').from('top_score')
         .then( data => {
             const topScore = data[0].score;
@@ -52,4 +53,4 @@ app.put('/updateTopScore', (req,res) => {
 
 })
 
-app.listen(3005, ()=> {console.log('app is running')})
+app.listen(process.env.PORT, ()=> {console.log('app is running')})
