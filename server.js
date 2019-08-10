@@ -2,15 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const knex = require('knex');
-const { Client } = require('pg')
 
 //connecting to the database in heroku
-const db = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
+const db = knex({
+    client: 'pg',
+    connection: {
+        connectionString: process.env.DATABASE_URL,
+        ssl: true,
+    }
   });
 
-db.connect();
 
 const app = express();
 
@@ -21,11 +22,17 @@ app.get('/', (req,res) => {
     res.json('is working');
 })
 
+app.get('test', (req,res) => {
+    db.select('*').from('top_score')
+        .then(data => res.json(data))
+})
+
 app.get('/topScore', (req,res) => {
 
     //gets the top score from the database so tht we can display it on the frontend
     db.select('score').from('top_score')
         .then(data => {
+            console.log(data);
             return res.json(data[0])
         })
         .catch(err => res.json('unable to get top score'))
@@ -51,4 +58,4 @@ app.put('/updateTopScore', (req,res) => {
 
 })
 
-app.listen(process.env.PORT, ()=> {console.log('app is running')})
+app.listen(process.env.PORT||5000, ()=> {console.log('app is running')})
